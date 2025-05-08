@@ -2,83 +2,144 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>再発防止AI - Restart Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>虐待再発防止プログラム - Restart Support</title>
   <style>
     body {
       font-family: sans-serif;
       background: #f0f4f8;
-      text-align: center;
       padding: 20px;
     }
     h1 {
       color: #00796b;
+      text-align: center;
     }
     .section {
-      background: white;
+      background: #ffffff;
       border-radius: 10px;
       padding: 20px;
-      margin-top: 20px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      max-width: 700px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
     button {
       background: #00796b;
       color: white;
-      border: none;
       padding: 10px 20px;
-      margin: 10px;
+      border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-    button:hover {
-      background: #004d40;
+      font-size: 1em;
     }
     .result {
-      font-size: 1.2em;
       margin-top: 20px;
+      padding: 15px;
+      background: #e0f7fa;
+      border-left: 5px solid #00796b;
+    }
+    .disclaimer {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 30px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>再発防止AI - Restart Assistant</h1>
 
-  <div class="section">
-    <p>今日はどんな気持ちでしたか？</p>
-    <button onclick="record('calm')">落ち着いていた</button>
-    <button onclick="record('irritated')">イライラした</button>
-    <button onclick="record('yelled')">怒鳴った</button>
-    <button onclick="record('hit')">叩いてしまった</button>
+<h1>虐待再発防止プログラム - Restart Support</h1>
 
-    <div class="result" id="result"></div>
-  </div>
+<div class="section">
+  <label>今日の気持ちは？</label>
+  <select id="emotion">
+    <option>落ち着いていた</option>
+    <option>イライラした</option>
+    <option>怒鳴ってしまった</option>
+    <option>叩いてしまった</option>
+    <option>悲しかった／孤独</option>
+  </select>
 
-  <script>
-    function record(feeling) {
-      let message = '';
-      let risk = '';
-      switch (feeling) {
-        case 'calm':
-          message = 'よく頑張りました。穏やかに過ごせたことを大切にしましょう。';
-          risk = 'リスク：低';
-          break;
-        case 'irritated':
-          message = 'イライラするのは自然なこと。でも次の行動を選べることが大切です。';
-          risk = 'リスク：中';
-          break;
-        case 'yelled':
-          message = '怒鳴ってしまいましたね。次回は深呼吸して少し距離をとってみましょう。';
-          risk = 'リスク：中〜高';
-          break;
-        case 'hit':
-          message = '叩いてしまったことは重大です。今、謝ること・支援を受けることが大切です。';
-          risk = 'リスク：高';
-          break;
-      }
-      document.getElementById('result').innerHTML = `<p>${message}</p><p><strong>${risk}</strong></p>`;
+  <label>子どもとのやりとりで当てはまること</label>
+  <select id="behavior">
+    <option>笑顔で話せた</option>
+    <option>無視した</option>
+    <option>怒鳴った</option>
+    <option>暴力を使った</option>
+  </select>
+
+  <label>怒りの原因は？</label>
+  <select id="trigger">
+    <option>子どもの行動</option>
+    <option>仕事・お金のストレス</option>
+    <option>パートナーとの問題</option>
+    <option>疲れ・睡眠不足</option>
+  </select>
+
+  <label>使えた対処法</label>
+  <select id="coping">
+    <option>深呼吸／落ち着くまで離れる</option>
+    <option>誰かに話した</option>
+    <option>何もできなかった</option>
+    <option>分からない</option>
+  </select>
+
+  <label>今日、自分を認められたことは？</label>
+  <input type="text" id="selfCare" placeholder="例：子どもを見守れた、我慢できた など"/>
+
+  <label>明日、どう行動したい？</label>
+  <textarea id="tomorrow" placeholder="例：叩かずに話してみたい、相談したい など"></textarea>
+
+  <button onclick="generateAdvice()">ふりかえりとアドバイスを見る</button>
+
+  <div class="result" id="resultArea"></div>
+</div>
+
+<div class="disclaimer">
+  ※このプログラムはAIではありません。あなた自身による振り返りを支える記録補助ツールです。
+</div>
+
+<script>
+  function generateAdvice() {
+    const emotion = document.getElementById("emotion").value;
+    const behavior = document.getElementById("behavior").value;
+    const trigger = document.getElementById("trigger").value;
+    const coping = document.getElementById("coping").value;
+    const selfCare = document.getElementById("selfCare").value;
+    const tomorrow = document.getElementById("tomorrow").value;
+
+    let message = `＜今日のふりかえり＞<br>`;
+    message += `あなたは「${emotion}」と感じ、「${behavior}」という行動がありました。<br>`;
+    message += `その背景には「${trigger}」があり、対処法として「${coping}」を試みました。<br><br>`;
+
+    if (coping.includes("何もできなかった")) {
+      message += `→ 次は「落ち着く場所」「深呼吸」など自分を守る行動を1つだけ準備してみましょう。<br>`;
+    } else {
+      message += `→ 対処できた自分を少しでも認めてください。続けることが大切です。<br>`;
     }
-  </script>
+
+    if (selfCare.trim()) {
+      message += `あなたが今日自分を認めたこと：「${selfCare}」<br>`;
+    }
+
+    if (tomorrow.trim()) {
+      message += `<br><strong>明日のあなたへ：</strong><br>${tomorrow}<br>`;
+    }
+
+    document.getElementById("resultArea").innerHTML = message;
+  }
+</script>
+
 </body>
 </html>
