@@ -35,8 +35,6 @@
         button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #45a049; }
         input, textarea { width: 100%; padding: 10px; margin: 10px 0; }
-        .lesson { display: flex; flex-wrap: wrap; gap: 1em; justify-content: center; }
-        .lesson div { flex: 1; min-width: 300px; }
         @media (max-width: 600px) {
             section { margin: 0.5em; padding: 1em; }
         }
@@ -69,11 +67,11 @@
         <p id="result"></p>
     </section>
 
-    <!-- ミニレッスン（英語動画＋日本語字幕） -->
+    <!-- ミニレッスン（1つの英語動画＋日本語字幕） -->
     <section id="lessons">
         <h2>ミニレッスン</h2>
         <p>家庭でできるABA遊び（1日5分！英語動画＋日本語字幕）</p>
-        <div id="video-container" class="lesson"></div>
+        <div id="video-container"></div>
         <p><a href="#tracker">実践したら進捗を記録！</a></p>
     </section>
 
@@ -109,17 +107,19 @@
     </footer>
 
     <script>
-        // 動画の動的読み込み
+        // 動画の動的読み込み（1つ）
         fetch("assets/data/videos.json")
             .then(response => response.json())
             .then(videos => {
                 const container = document.getElementById("video-container");
-                container.innerHTML = videos.map(video => `
-                    <div>
-                        <h3>${video.title}</h3>
-                        <iframe width="560" height="315" src="${video.url}" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                `).join("");
+                if (videos.length > 0) {
+                    container.innerHTML = `
+                        <h3>${videos[0].title}</h3>
+                        <iframe width="560" height="315" src="${videos[0].url}" frameborder="0" allowfullscreen></iframe>
+                    `;
+                } else {
+                    container.innerHTML = "<p>動画が設定されていません。管理者にお問い合わせください。</p>";
+                }
             })
             .catch(error => {
                 document.getElementById("video-container").innerHTML = "<p>動画の読み込みに失敗しました。後でもう一度お試しください。</p>";
@@ -146,8 +146,7 @@
             doc.text("ABAスターターパック", 10, 10);
             doc.text("1. ABAとは？ 褒めて行動を増やす方法！", 10, 20);
             doc.text("2. アクティビティ：手を叩く（模倣練習）", 10, 30);
-            doc.text("3. アクティビティ：欲しいと言おう（要求練習）", 10, 40);
-            doc.text("4. 進捗記録：1日5分でOK！", 10, 50);
+            doc.text("3. 進捗記録：1日5分でOK！", 10, 40);
             doc.save("aba-starter-pack.pdf");
         }
 
