@@ -120,6 +120,9 @@
                         <iframe width="560" height="315" src="${video.url}" frameborder="0" allowfullscreen></iframe>
                     </div>
                 `).join("");
+            })
+            .catch(error => {
+                document.getElementById("video-container").innerHTML = "<p>動画の読み込みに失敗しました。後でもう一度お試しください。</p>";
             });
 
         // チェックリスト
