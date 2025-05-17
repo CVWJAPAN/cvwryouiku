@@ -31,11 +31,12 @@
             margin-left: auto;
             margin-right: auto;
         }
-        canvas { max-width: 100%; }
-        iframe { max-width: 100%; }
+        canvas, iframe, img { max-width: 100%; }
         button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #45a049; }
         input, textarea { width: 100%; padding: 10px; margin: 10px 0; }
+        .lesson { display: flex; flex-wrap: wrap; gap: 1em; justify-content: center; }
+        .lesson div { flex: 1; min-width: 300px; }
         @media (max-width: 600px) {
             section { margin: 0.5em; padding: 1em; }
         }
@@ -68,11 +69,23 @@
         <p id="result"></p>
     </section>
 
-    <!-- ミニレッスン動画 -->
+    <!-- ミニレッスン（動画＋テキスト＋イラスト） -->
     <section id="lessons">
-        <h2>ミニレッスン動画</h2>
-        <p>家庭でできるABA遊び</p>
-        <div id="video-container"></div>
+        <h2>ミニレッスン</h2>
+        <p>家庭でできるABA遊び（1日5分！）</p>
+        <div id="video-container" class="lesson"></div>
+        <div class="lesson">
+            <div>
+                <h3>模倣練習：手を叩こう</h3>
+                <img src="assets/images/clap.png" alt="手を叩くイラスト">
+                <p>1. 「ママの真似して手を叩いて！」と言う<br>2. できたら「やったね！」と笑顔で褒める<br>3. 毎日5分、楽しく続けて！</p>
+            </div>
+            <div>
+                <h3>要求練習：欲しいと言おう</h3>
+                <img src="assets/images/juice.png" alt="ジュースのイラスト">
+                <p>1. おやつ時にジュースを見せる<br>2. 「ジュース」と言うまで待つ<br>3. 言えたら渡して「よく言えた！」と褒める</p>
+            </div>
+        </div>
         <p><a href="#tracker">実践したら進捗を記録！</a></p>
     </section>
 
@@ -114,22 +127,23 @@
             .then(videos => {
                 const container = document.getElementById("video-container");
                 container.innerHTML = videos.map(video => `
-                    <h3>${video.title}</h3>
-                    <iframe width="560" height="315" src="${video.url}" frameborder="0" allowfullscreen></iframe>
+                    <div>
+                        <h3>${video.title}</h3>
+                        <iframe width="560" height="315" src="${video.url}" frameborder="0" allowfullscreen></iframe>
+                    </div>
                 `).join("");
             });
 
         // チェックリスト
-        const milestones = {
-            2: { question: "2語文を話す", expected: "はい" },
-            3: { question: "2語文を話す", expected: "はい" },
-            4: { question: "3語文を話す", expected: "はい" }
-        };
-        function checkMilestone() {
-            const age = document.getElementById("age").value;
-            const result = document.getElementById("result");
-            result.innerHTML = `気になる場合は、<a href="#starter-pack">ABAスターターパック</a>を試してみましょう！`;
-        }
+        fetch("assets/data/milestones.json")
+            .then(response => response.json())
+            .then(milestones => {
+                window.checkMilestone = function() {
+                    const age = document.getElementById("age").value;
+                    const result = document.getElementById("result");
+                    result.innerHTML = `気になる場合は、<a href="#starter-pack">ABAスターターパック</a>または<a href="#lessons">ミニレッスン</a>を試してみましょう！`;
+                };
+            });
 
         // PDF生成
         function generatePDF() {
@@ -138,7 +152,8 @@
             doc.text("ABAスターターパック", 10, 10);
             doc.text("1. ABAとは？ 褒めて行動を増やす方法！", 10, 20);
             doc.text("2. アクティビティ：手を叩く（模倣練習）", 10, 30);
-            doc.text("3. 進捗記録：1日5分でOK！", 10, 40);
+            doc.text("3. アクティビティ：欲しいと言おう（要求練習）", 10, 40);
+            doc.text("4. 進捗記録：1日5分でOK！", 10, 50);
             doc.save("aba-starter-pack.pdf");
         }
 
