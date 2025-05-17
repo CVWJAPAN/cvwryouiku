@@ -72,7 +72,7 @@
     <section id="lessons">
         <h2>ミニレッスン動画</h2>
         <p>家庭でできるABA遊び</p>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+        <div id="video-container"></div>
         <p><a href="#tracker">実践したら進捗を記録！</a></p>
     </section>
 
@@ -108,6 +108,17 @@
     </footer>
 
     <script>
+        // 動画の動的読み込み
+        fetch("assets/data/videos.json")
+            .then(response => response.json())
+            .then(videos => {
+                const container = document.getElementById("video-container");
+                container.innerHTML = videos.map(video => `
+                    <h3>${video.title}</h3>
+                    <iframe width="560" height="315" src="${video.url}" frameborder="0" allowfullscreen></iframe>
+                `).join("");
+            });
+
         // チェックリスト
         const milestones = {
             2: { question: "2語文を話す", expected: "はい" },
@@ -153,21 +164,23 @@
         }
 
         // Q&Aフォーラム
-        const qaRules = {
-            "癇癪": "落ち着くまで無視し、落ち着いたら褒めましょう。"
-        };
-        let forumPosts = JSON.parse(localStorage.getItem("forum")) || [];
-        function askQuestion() {
-            const question = document.getElementById("question").value;
-            const answer = document.getElementById("answer");
-            const forum = document.getElementById("forum");
-            let response = qaRules[question] || "専門家に相談してみましょう！";
-            answer.innerHTML = response;
-            forumPosts.push({ question, response });
-            localStorage.setItem("forum", JSON.stringify(forumPosts));
-            forum.innerHTML = forumPosts.map(p => `<p><b>Q:</b> ${p.question}<br><b>A:</b> ${p.response}</p>`).join("");
-        }
-        document.getElementById("forum").innerHTML = forumPosts.map(p => `<p><b>Q:</b> ${p.question}<br><b>A:</b> ${p.response}</p>`).join("");
+        fetch("assets/data/qa-rules.json")
+            .then(response => response.json())
+            .then(qaRules => {
+                let forumPosts = JSON.parse(localStorage.getItem("forum")) || [];
+                document.getElementById("forum").innerHTML = forumPosts.map(p => `<p><b>Q:</b> ${p.question}<br><b>A:</b> ${p.response}</p>`).join("");
+                
+                window.askQuestion = function() {
+                    const question = document.getElementById("question").value;
+                    const answer = document.getElementById("answer");
+                    const forum = document.getElementById("forum");
+                    let response = qaRules[question] || "専門家に相談してみましょう！";
+                    answer.innerHTML = response;
+                    forumPosts.push({ question, response });
+                    localStorage.setItem("forum", JSON.stringify(forumPosts));
+                    forum.innerHTML = forumPosts.map(p => `<p><b>Q:</b> ${p.question}<br><b>A:</b> ${p.response}</p>`).join("");
+                };
+            });
     </script>
 </body>
 </html>
