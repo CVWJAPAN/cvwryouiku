@@ -113,16 +113,17 @@
             .then(videos => {
                 const container = document.getElementById("video-container");
                 if (videos.length > 0) {
+                    const video = videos[0];
                     container.innerHTML = `
-                        <h3>${videos[0].title}</h3>
-                        <iframe width="560" height="315" src="${videos[0].url}" frameborder="0" allowfullscreen></iframe>
+                        <h3>${video.title}</h3>
+                        <iframe width="560" height="315" src="${video.url}" frameborder="0" allowfullscreen></iframe>
                     `;
                 } else {
                     container.innerHTML = "<p>動画が設定されていません。管理者にお問い合わせください。</p>";
                 }
             })
             .catch(error => {
-                document.getElementById("video-container").innerHTML = "<p>動画の読み込みに失敗しました。後でもう一度お試しください。</p>";
+                document.getElementById("video-container").innerHTML = "<p>動画の読み込みに失敗しました。ネットワークを確認し、後でもう一度お試しください。</p>";
             });
 
         // チェックリスト
