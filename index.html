@@ -1,145 +1,173 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>虐待再発防止プログラム - Restart Support</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f0f4f8;
-      padding: 20px;
-    }
-    h1 {
-      color: #00796b;
-      text-align: center;
-    }
-    .section {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 700px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
-    select, input[type="text"], textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background: #00796b;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-    .result {
-      margin-top: 20px;
-      padding: 15px;
-      background: #e0f7fa;
-      border-left: 5px solid #00796b;
-    }
-    .disclaimer {
-      font-size: 0.9em;
-      color: #555;
-      margin-top: 30px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABA発達サポート</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+        }
+        nav a {
+            color: white;
+            margin: 0 1em;
+            text-decoration: none;
+        }
+        section {
+            padding: 2em;
+            margin: 1em;
+            background-color: white;
+            border-radius: 8px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        canvas { max-width: 100%; }
+        iframe { max-width: 100%; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; }
+        @media (max-width: 600px) {
+            section { margin: 0.5em; padding: 1em; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+    <header>
+        <h1>ABA発達サポート</h1>
+        <nav>
+            <a href="#checklist">発達チェック</a>
+            <a href="#lessons">ミニレッスン</a>
+            <a href="#tracker">進捗トラッカー</a>
+            <a href="#qa">Q&A</a>
+        </nav>
+    </header>
 
-<h1>虐待再発防止プログラム - Restart Support</h1>
+    <!-- 発達チェックリスト -->
+    <section id="checklist">
+        <h2>発達チェックリスト</h2>
+        <label>お子さんの年齢を選択:</label>
+        <select id="age">
+            <option value="2">2歳</option>
+            <option value="3">3歳</option>
+            <option value="4">4歳</option>
+        </select>
+        <p>2語文を話しますか？（例：「ママ、ボール」）</p>
+        <button onclick="checkMilestone()">チェック</button>
+        <p id="result"></p>
+    </section>
 
-<div class="section">
-  <label>今日の気持ちは？</label>
-  <select id="emotion">
-    <option>落ち着いていた</option>
-    <option>イライラした</option>
-    <option>怒鳴ってしまった</option>
-    <option>叩いてしまった</option>
-    <option>悲しかった／孤独</option>
-  </select>
+    <!-- ミニレッスン動画 -->
+    <section id="lessons">
+        <h2>ミニレッスン動画</h2>
+        <p>家庭でできるABA遊び</p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+        <p><a href="#tracker">実践したら進捗を記録！</a></p>
+    </section>
 
-  <label>子どもとのやりとりで当てはまること</label>
-  <select id="behavior">
-    <option>笑顔で話せた</option>
-    <option>無視した</option>
-    <option>怒鳴った</option>
-    <option>暴力を使った</option>
-  </select>
+    <!-- ABAスターターパック -->
+    <section id="starter-pack">
+        <h2>ABAスターターパック</h2>
+        <p>家庭でできるABAガイド（PDF）</p>
+        <button onclick="generatePDF()">ダウンロード</button>
+    </section>
 
-  <label>怒りの原因は？</label>
-  <select id="trigger">
-    <option>子どもの行動</option>
-    <option>仕事・お金のストレス</option>
-    <option>パートナーとの問題</option>
-    <option>疲れ・睡眠不足</option>
-  </select>
+    <!-- 進捗トラッカー -->
+    <section id="tracker">
+        <h2>進捗トラッカー</h2>
+        <input type="text" id="task" placeholder="例：単語を言えた回数">
+        <button onclick="addProgress()">記録</button>
+        <canvas id="progressChart"></canvas>
+    </section>
 
-  <label>使えた対処法</label>
-  <select id="coping">
-    <option>深呼吸／落ち着くまで離れる</option>
-    <option>誰かに話した</option>
-    <option>何もできなかった</option>
-    <option>分からない</option>
-  </select>
+    <!-- Q&Aフォーラム -->
+    <section id="qa">
+        <h2>Q&Aフォーラム</h2>
+        <input type="text" id="question" placeholder="例：癇癪の対処法は？">
+        <button onclick="askQuestion()">質問する</button>
+        <p id="answer"></p>
+        <h3>みんなの質問</h3>
+        <div id="forum"></div>
+    </section>
 
-  <label>今日、自分を認められたことは？</label>
-  <input type="text" id="selfCare" placeholder="例：子どもを見守れた、我慢できた など"/>
+    <!-- フッター -->
+    <footer>
+        <h3>リソース</h3>
+        <p><a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/service/shien.html">発達障害者支援センター</a></p>
+    </footer>
 
-  <label>明日、どう行動したい？</label>
-  <textarea id="tomorrow" placeholder="例：叩かずに話してみたい、相談したい など"></textarea>
+    <script>
+        // チェックリスト
+        const milestones = {
+            2: { question: "2語文を話す", expected: "はい" },
+            3: { question: "2語文を話す", expected: "はい" },
+            4: { question: "3語文を話す", expected: "はい" }
+        };
+        function checkMilestone() {
+            const age = document.getElementById("age").value;
+            const result = document.getElementById("result");
+            result.innerHTML = `気になる場合は、<a href="#starter-pack">ABAスターターパック</a>を試してみましょう！`;
+        }
 
-  <button onclick="generateAdvice()">ふりかえりとアドバイスを見る</button>
+        // PDF生成
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("ABAスターターパック", 10, 10);
+            doc.text("1. ABAとは？ 褒めて行動を増やす方法！", 10, 20);
+            doc.text("2. アクティビティ：手を叩く（模倣練習）", 10, 30);
+            doc.text("3. 進捗記録：1日5分でOK！", 10, 40);
+            doc.save("aba-starter-pack.pdf");
+        }
 
-  <div class="result" id="resultArea"></div>
-</div>
+        // 進捗トラッカー
+        let progressData = JSON.parse(localStorage.getItem("progress")) || [];
+        const ctx = document.getElementById("progressChart").getContext("2d");
+        const chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{ label: "単語数", data: [], borderColor: "#4CAF50" }]
+            }
+        });
+        function addProgress() {
+            const task = document.getElementById("task").value;
+            if (task) {
+                progressData.push(parseInt(task) || 0);
+                localStorage.setItem("progress", JSON.stringify(progressData));
+                chart.data.labels.push(new Date().toLocaleDateString());
+                chart.data.datasets[0].data = progressData;
+                chart.update();
+            }
+        }
 
-<div class="disclaimer">
-  ※このプログラムはAIではありません。あなた自身による振り返りを支える記録補助ツールです。
-</div>
-
-<script>
-  function generateAdvice() {
-    const emotion = document.getElementById("emotion").value;
-    const behavior = document.getElementById("behavior").value;
-    const trigger = document.getElementById("trigger").value;
-    const coping = document.getElementById("coping").value;
-    const selfCare = document.getElementById("selfCare").value;
-    const tomorrow = document.getElementById("tomorrow").value;
-
-    let message = `＜今日のふりかえり＞<br>`;
-    message += `あなたは「${emotion}」と感じ、「${behavior}」という行動がありました。<br>`;
-    message += `その背景には「${trigger}」があり、対処法として「${coping}」を試みました。<br><br>`;
-
-    if (coping.includes("何もできなかった")) {
-      message += `→ 次は「落ち着く場所」「深呼吸」など自分を守る行動を1つだけ準備してみましょう。<br>`;
-    } else {
-      message += `→ 対処できた自分を少しでも認めてください。続けることが大切です。<br>`;
-    }
-
-    if (selfCare.trim()) {
-      message += `あなたが今日自分を認めたこと：「${selfCare}」<br>`;
-    }
-
-    if (tomorrow.trim()) {
-      message += `<br><strong>明日のあなたへ：</strong><br>${tomorrow}<br>`;
-    }
-
-    document.getElementById("resultArea").innerHTML = message;
-  }
-</script>
-
+        // Q&Aフォーラム
+        const qaRules = {
+            "癇癪": "落ち着くまで無視し、落ち着いたら褒めましょう。"
+        };
+        let forumPosts = JSON.parse(localStorage.getItem("forum")) || [];
+        function askQuestion() {
+            const question = document.getElementById("question").value;
+            const answer = document.getElementById("answer");
+            const forum = document.getElementById("forum");
+            let response = qaRules[question] || "専門家に相談してみましょう！";
+            answer.innerHTML = response;
+            forumPosts.push({ question, response });
+            localStorage.setItem("forum", JSON.stringify(forumPosts));
+            forum.innerHTML = forumPosts.map(p => `<p><b>Q:</b> ${p.question}<br><b>A:</b> ${p.response}</p>`).join("");
+        }
+        document.getElementById("forum").innerHTML = forumPosts.map(p => `<p><b>Q:</b> ${p.question}<br><b>A:</b> ${p.response}</p>`).join("");
+    </script>
 </body>
 </html>
