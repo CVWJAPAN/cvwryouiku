@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ABA Development Support</title>
+    <title>ABA発達サポート</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,70 +46,70 @@
 </head>
 <body>
     <header>
-        <h1>ABA Development Support</h1>
+        <h1>ABA発達サポート</h1>
         <nav>
-            <a href="#checklist">Development Checklist</a>
-            <a href="#lessons">Mini Lessons</a>
-            <a href="#tracker">Progress Tracker</a>
+            <a href="#checklist">発達チェック</a>
+            <a href="#lessons">ミニレッスン</a>
+            <a href="#tracker">進捗トラッカー</a>
             <a href="#qa">Q&A</a>
         </nav>
     </header>
 
-    <!-- Development Checklist -->
+    <!-- 発達チェックリスト -->
     <section id="checklist">
-        <h2>Development Checklist</h2>
-        <label>Select your child's age:</label>
+        <h2>発達チェックリスト</h2>
+        <label>お子さんの年齢を選択:</label>
         <select id="age">
-            <option value="2">2 years</option>
-            <option value="3">3 years</option>
-            <option value="4">4 years</option>
+            <option value="2">2歳</option>
+            <option value="3">3歳</option>
+            <option value="4">4歳</option>
         </select>
-        <p>Does your child use two-word phrases? (e.g., "Mommy, ball")</p>
-        <button onclick="checkMilestone()">Check</button>
+        <p>2語文を話しますか？（例：「ママ、ボール」）</p>
+        <button onclick="checkMilestone()">チェック</button>
         <p id="result"></p>
     </section>
 
-    <!-- Mini Lessons (Videos Only) -->
+    <!-- ミニレッスン（英語動画＋日本語字幕） -->
     <section id="lessons">
-        <h2>Mini Lessons</h2>
-        <p>Simple ABA activities for home (5 minutes a day!)</p>
+        <h2>ミニレッスン</h2>
+        <p>家庭でできるABA遊び（1日5分！英語動画＋日本語字幕）</p>
         <div id="video-container" class="lesson"></div>
-        <p><a href="#tracker">Track your progress!</a></p>
+        <p><a href="#tracker">実践したら進捗を記録！</a></p>
     </section>
 
-    <!-- ABA Starter Pack -->
+    <!-- ABAスターターパック -->
     <section id="starter-pack">
-        <h2>ABA Starter Pack</h2>
-        <p>Download a guide for ABA at home (PDF)</p>
-        <button onclick="generatePDF()">Download</button>
+        <h2>ABAスターターパック</h2>
+        <p>家庭でできるABAガイド（PDF、日本語）</p>
+        <button onclick="generatePDF()">ダウンロード</button>
     </section>
 
-    <!-- Progress Tracker -->
+    <!-- 進捗トラッカー -->
     <section id="tracker">
-        <h2>Progress Tracker</h2>
-        <input type="text" id="task" placeholder="e.g., Number of words spoken">
-        <button onclick="addProgress()">Record</button>
+        <h2>進捗トラッカー</h2>
+        <input type="text" id="task" placeholder="例：単語を言えた回数">
+        <button onclick="addProgress()">記録</button>
         <canvas id="progressChart"></canvas>
     </section>
 
-    <!-- Q&A Forum -->
+    <!-- Q&Aフォーラム -->
     <section id="qa">
-        <h2>Q&A Forum</h2>
-        <input type="text" id="question" placeholder="e.g., How to handle tantrums?">
-        <button onclick="askQuestion()">Ask</button>
+        <h2>Q&Aフォーラム</h2>
+        <input type="text" id="question" placeholder="例：癇癪の対処法は？">
+        <button onclick="askQuestion()">質問する</button>
         <p id="answer"></p>
-        <h3>Community Questions</h3>
+        <h3>みんなの質問</h3>
         <div id="forum"></div>
     </section>
 
-    <!-- Footer -->
+    <!-- フッター -->
     <footer>
-        <h3>Resources</h3>
-        <p><a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/service/shien.html">Japan Developmental Support Centers</a></p>
+        <h3>リソース</h3>
+        <p><a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/service/shien.html">発達障害者支援センター</a></p>
     </footer>
 
     <script>
-        // Load Videos
+        // 動画の動的読み込み
         fetch("assets/data/videos.json")
             .then(response => response.json())
             .then(videos => {
@@ -122,37 +122,40 @@
                 `).join("");
             });
 
-        // Checklist
+        // チェックリスト
         fetch("assets/data/milestones.json")
             .then(response => response.json())
             .then(milestones => {
                 window.checkMilestone = function() {
                     const age = document.getElementById("age").value;
                     const result = document.getElementById("result");
-                    result.innerHTML = `If concerned, try the <a href="#starter-pack">ABA Starter Pack</a> or <a href="#lessons">Mini Lessons</a>!`;
+                    result.innerHTML = `気になる場合は、<a href="#starter-pack">ABAスターターパック</a>または<a href="#lessons">ミニレッスン</a>を試してみましょう！`;
                 };
             });
 
-        // PDF Generation
+        // PDF生成（日本語）
         function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text("ABA Starter Pack", 10, 10);
-            doc.text("1. What is ABA? A method to encourage behaviors!", 10, 20);
-            doc.text("2. Activity: Clap Your Hands (Imitation)", 10, 30);
-            doc.text("3. Activity: Say 'Juice' (Request)", 10, 40);
-            doc.text("4. Progress: 5 minutes a day is enough!", 10, 50);
+            doc.setFont("NotoSansJP", "normal");
+            doc.addFileToVFS("NotoSansJP-Regular.ttf", "https://fonts.gstatic.com/s/notosansjp/v28/-F62fjtqLzI_7P4e8g6b_8A5.ttf");
+            doc.addFont("NotoSansJP-Regular.ttf", "NotoSansJP", "normal");
+            doc.text("ABAスターターパック", 10, 10);
+            doc.text("1. ABAとは？ 褒めて行動を増やす方法！", 10, 20);
+            doc.text("2. アクティビティ：手を叩く（模倣練習）", 10, 30);
+            doc.text("3. アクティビティ：欲しいと言おう（要求練習）", 10, 40);
+            doc.text("4. 進捗記録：1日5分でOK！", 10, 50);
             doc.save("aba-starter-pack.pdf");
         }
 
-        // Progress Tracker
+        // 進捗トラッカー
         let progressData = JSON.parse(localStorage.getItem("progress")) || [];
         const ctx = document.getElementById("progressChart").getContext("2d");
         const chart = new Chart(ctx, {
             type: "line",
             data: {
                 labels: [],
-                datasets: [{ label: "Words Spoken", data: [], borderColor: "#4CAF50" }]
+                datasets: [{ label: "単語数", data: [], borderColor: "#4CAF50" }]
             }
         });
         function addProgress() {
@@ -166,7 +169,7 @@
             }
         }
 
-        // Q&A Forum
+        // Q&Aフォーラム
         fetch("assets/data/qa-rules.json")
             .then(response => response.json())
             .then(qaRules => {
@@ -177,7 +180,7 @@
                     const question = document.getElementById("question").value;
                     const answer = document.getElementById("answer");
                     const forum = document.getElementById("forum");
-                    let response = qaRules[question] || "Consider consulting a specialist!";
+                    let response = qaRules[question] || "専門家に相談してみましょう！";
                     answer.innerHTML = response;
                     forumPosts.push({ question, response });
                     localStorage.setItem("forum", JSON.stringify(forumPosts));
